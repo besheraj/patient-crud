@@ -1,0 +1,26 @@
+{
+  "name": "besher-05052021",
+  "version": "1.0.0",
+  "description": "Please create a simple RESTFul API using Express.Js and Mongoose that can perform CRUD operations on a patient profile.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esyms-interviews/besher-05052021.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/esyms-interviews/besher-05052021/issues"
+  },
+  "homepage": "https://github.com/esyms-interviews/besher-05052021#readme",
+  "dependencies": {
+    "dotenv": "^9.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.7",
+    "nodemon": "^2.0.7"
+  }
+}
