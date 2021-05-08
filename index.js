@@ -9,8 +9,11 @@ app.use(express.urlencoded({
   extended: true
 }));
 
-// Middlewear
+// Import Routes
+const authRoute = require('./controller/auth');
 
+// Route Middlewears
+app.use('/api/auth',authRoute)
 
 //Connect To DB
 mongoose.connect(process.env.DB_CONNECTION,
