@@ -11,9 +11,11 @@ app.use(express.urlencoded({
 
 // Import Routes
 const authRoute = require('./controller/auth');
+const patientsRoute = require('./controller/patients');
 
 // Route Middlewears
 app.use('/api/auth',authRoute)
+app.use('/api/patients',patientsRoute)
 
 //Connect To DB
 mongoose.connect(process.env.DB_CONNECTION,
