@@ -1,5 +1,5 @@
 
-const responseMessages = {
+const authResponseMessages = {
     emailExists: "Email already Exists Please Try To Login",
     passwordNotMatch: "Password and Password confirmation not match",
     registerSuccessful: "User Registered Successfully",
@@ -10,4 +10,4 @@ const responseMessages = {
 
 }
 
-module.exports.responseMessages = responseMessages;
+module.exports.authResponseMessages = authResponseMessages;

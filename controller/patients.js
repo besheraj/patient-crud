@@ -4,7 +4,7 @@ const Patient = require('../models/Patient')
 const verify = require('./lib/verifyToken')
 const { patientValidation, updatedPatientValidation } = require('./validation/patientValidation')
 const { respondWithError, respondWithData, respondWithMessage } = require('./lib/respond')
-
+const {patientResponseMessages} = require('./responseMessages/patient') 
 
 // add patient profile
 router.post('/', verify, async (req, res) => {
@@ -15,7 +15,7 @@ router.post('/', verify, async (req, res) => {
 
     // Email exists
     const emailExists = await Patient.findOne({ email: req.body.email });
-    if (emailExists) return res.status(400).send(respondWithError('Patient already added'))
+    if (emailExists) return res.status(400).send(respondWithError(responseMessages.patientExists))
 
     const patient = new Patient({
         mrn: req.body.mrn,
@@ -40,7 +40,7 @@ router.post('/', verify, async (req, res) => {
     })
     try {
         const savedPatient = await patient.save()
-        const message = 'Profile Added'
+        const message = responseMessages.added
         res.json(respondWithData(message, savedPatient))
     } catch (err) {
         res.status(400).send(respondWithError(err))
@@ -53,11 +53,11 @@ router.get('/', verify, async (req, res) => {
     try {
         const patients = await Patient.find();
         if (patients.length > 0) {
-            const message = 'All Profiles retrieved'
+            const message = responseMessages.allProfiles
             res.json(respondWithData(message, patients))
         }
         else {
-            const message = 'No Data to show'
+            const message = responseMessages.noData
             res.json(respondWithData(message, patients))
         }
         res.json(respondWithData(message, patients))
@@ -71,7 +71,7 @@ router.get('/:patientId', verify, async (req, res) => {
     try {
         const id = req.params.patientId
         const patient = await Patient.findById(id);
-        const message = 'Profile retrieved'
+        const message = responseMessages.revived
         res.json(respondWithData(message, patient))
     } catch (err) {
         res.status(400).send(respondWithError(err))
@@ -99,7 +99,7 @@ router.put('/:patientId', verify, async (req, res) => {
             {
                 $set:updates
             })
-        const message = 'Profile Updated'
+        const message = responseMessages.updated
         const patient = await Patient.findById(id);
         res.json(respondWithData(message, patient))
     } catch (err) {
@@ -113,7 +113,7 @@ router.delete('/:patientId', verify, async (req, res) => {
     try {
         const id = req.params.patientId
         await Patient.remove({ _id: id });
-        const message = 'Profile Deleted'
+        const message = responseMessages.deleted
         res.json(respondWithMessage(message))
     } catch (err) {
         res.status(400).send(respondWithError(err))

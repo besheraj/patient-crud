@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { registerValidation, loginValidation } = require('./validation/authValidation')
 const { respondWithError, respondWithData, respondWithMessage } = require('./lib/respond')
-const {responseMessages} = require('./responseMessages/auth') 
+const {authResponseMessages} = require('./responseMessages/auth') 
 
 
 router.post('/register', async (req, res) => {
@@ -17,11 +17,11 @@ router.post('/register', async (req, res) => {
 
     // Email exists
     const emailExists = await Auth.findOne({ email: req.body.email });
-    if (emailExists) return res.status(400).send(respondWithError(responseMessages.emailExists))
+    if (emailExists) return res.status(400).send(respondWithError(authResponseMessages.emailExists))
 
     // validate password confirmation
     if (req.body.password != req.body.password_confirmation)
-        return res.status(400).send(respondWithError(responseMessages.passwordNotMatch))
+        return res.status(400).send(respondWithError(authResponseMessages.passwordNotMatch))
 
     // Hash Password
     const salt = await bcrypt.genSalt(10);
@@ -41,7 +41,7 @@ router.post('/register', async (req, res) => {
         const token = jwt.sign({ _id: savedUser._id }, process.env.TOKEN_SECRET, { expiresIn: '2h' })
         const decoded = jwt.decode(token)
 
-        const message = responseMessages.registerSuccessful
+        const message = authResponseMessages.registerSuccessful
         const data = {
             email: savedUser.email,
             id: savedUser._id,
@@ -65,17 +65,17 @@ router.post('/login', async (req, res) => {
 
     // Email exists
     const user = await Auth.findOne({ email: req.body.email });
-    if (!user) return res.status(400).send(respondWithError(responseMessages.loginNotMatch))
+    if (!user) return res.status(400).send(respondWithError(authResponseMessages.loginNotMatch))
 
     // If Password & Email is a match
     const validatePass = await bcrypt.compare(req.body.password, user.password)
-    if (!validatePass) return res.status(400).send(respondWithError(responseMessages.loginNotMatch))
+    if (!validatePass) return res.status(400).send(respondWithError(authResponseMessages.loginNotMatch))
 
     // Create Token 
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, { expiresIn: '2h' })
     // res.header({token}).send({message: 'login Successful'})
     const decoded = jwt.decode(token)
-    const message = responseMessages.loginSuccessful
+    const message = authResponseMessages.loginSuccessful
     const data = {
         email: user.email,
         id: user._id,
@@ -89,7 +89,7 @@ router.post('/logout', async (req,res) => {
 
     // token logged out already
     const canceledTokens = await BlacklistenToken.findOne({ token: req.body.access_token });
-    if (canceledTokens) return res.status(400).send(respondWithError(responseMessages.alreadyLoggedout))
+    if (canceledTokens) return res.status(400).send(respondWithError(authResponseMessages.alreadyLoggedout))
 
     const blackListedToken = new BlacklistenToken({
         token: req.body.access_token
@@ -97,7 +97,7 @@ router.post('/logout', async (req,res) => {
 
     try {
         await blackListedToken.save()
-        res.send(respondWithMessage(responseMessages.logoutSuccessful))
+        res.send(respondWithMessage(authResponseMessages.logoutSuccessful))
     }catch(err) {
         res.status(400).send(respondWithError(err))
     }
