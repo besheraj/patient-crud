@@ -15,7 +15,7 @@ router.post('/', verify, async (req, res) => {
 
     // Email exists
     const emailExists = await Patient.findOne({ email: req.body.email });
-    if (emailExists) return res.status(400).send(respondWithError(responseMessages.patientExists))
+    if (emailExists) return res.status(400).send(respondWithError(patientResponseMessages.patientExists))
 
     const patient = new Patient({
         mrn: req.body.mrn,
@@ -40,7 +40,7 @@ router.post('/', verify, async (req, res) => {
     })
     try {
         const savedPatient = await patient.save()
-        const message = responseMessages.added
+        const message = patientResponseMessages.added
         res.json(respondWithData(message, savedPatient))
     } catch (err) {
         res.status(400).send(respondWithError(err))
@@ -53,11 +53,11 @@ router.get('/', verify, async (req, res) => {
     try {
         const patients = await Patient.find();
         if (patients.length > 0) {
-            const message = responseMessages.allProfiles
+            const message = patientResponseMessages.allProfiles
             res.json(respondWithData(message, patients))
         }
         else {
-            const message = responseMessages.noData
+            const message = patientResponseMessages.noData
             res.json(respondWithData(message, patients))
         }
         res.json(respondWithData(message, patients))
@@ -71,7 +71,7 @@ router.get('/:patientId', verify, async (req, res) => {
     try {
         const id = req.params.patientId
         const patient = await Patient.findById(id);
-        const message = responseMessages.revived
+        const message = patientResponseMessages.revived
         res.json(respondWithData(message, patient))
     } catch (err) {
         res.status(400).send(respondWithError(err))
@@ -99,7 +99,7 @@ router.put('/:patientId', verify, async (req, res) => {
             {
                 $set:updates
             })
-        const message = responseMessages.updated
+        const message = patientResponseMessages.updated
         const patient = await Patient.findById(id);
         res.json(respondWithData(message, patient))
     } catch (err) {
@@ -113,7 +113,7 @@ router.delete('/:patientId', verify, async (req, res) => {
     try {
         const id = req.params.patientId
         await Patient.remove({ _id: id });
-        const message = responseMessages.deleted
+        const message = patientResponseMessages.deleted
         res.json(respondWithMessage(message))
     } catch (err) {
         res.status(400).send(respondWithError(err))
