@@ -4,7 +4,7 @@ const Auth = require('../models/Auth')
 const BlacklistenToken = require('../models/BlacklistedTokens')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { registerValidation, loginValidation } = require('./lib/validation')
+const { registerValidation, loginValidation } = require('./validation/authValidation')
 const { respondWithError, respondWithData, respondWithMessage } = require('./lib/respond')
 const {responseMessages} = require('./responseMessages/auth') 
 
