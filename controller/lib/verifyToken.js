@@ -3,7 +3,7 @@ const BlacklistenToken = require('../../models/BlacklistedTokens')
 const {authResponseMessages} = require('../responseMessages/auth') 
 
 module.exports = async function (req,res,next) {
-    const token = req.header(authResponseMessages.accessDenied);
+    const token = req.header('access_token');
     if(!token) return res.status(401).send(authResponseMessages.accessDenied)
     const canceledTokens = await BlacklistenToken.findOne({ token: token })
     if(canceledTokens) return res.status(401).send(authResponseMessages.invalidToken)
