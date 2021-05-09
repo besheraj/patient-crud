@@ -36,7 +36,7 @@ const nextOFKinSchema = mongoose.Schema({
     email: {
         type: String,
     }
-},{ _id : false })
+}, { _id: false })
 
 const patientsSchema = mongoose.Schema({
     mrn: {
@@ -70,16 +70,14 @@ const patientsSchema = mongoose.Schema({
     address: [addressSchema],
     nextOfKin: [nextOFKinSchema],
     isActive: {
-        type: String,
-        default: 'true'
-    },
-    createdDate: {
-        type: Date,
-        default: Date.now
-    },
-    updatedDate: {
-        type: Date,
-        default: Date.now
+        type: Boolean,
+        default: false
     }
-},{ versionKey: false })
+},
+    {
+        timestamps: { createdAt: 'createdDate', updatedAt: 'updatedDate' }
+    }
+    , { versionKey: false })
+
 module.exports = mongoose.model('Patient', patientsSchema)
+

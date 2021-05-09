@@ -26,4 +26,27 @@ const patientValidation = data => {
     return schema.validate(data)
 }
 
+const updatedPatientValidation = data => {
+    const schema = Joi.object({
+        contactNo: Joi.number().allow(''),
+        email: Joi.string().max(30).email().allow(''),
+        address: {
+            one: Joi.string().max(255).allow(''),
+            two: Joi.string().max(255).allow(''),
+            postcode: Joi.number().allow(''),
+            state: Joi.string().max(20).allow('')
+        },
+        nextOfKin: {
+            firstName: Joi.string().max(30).allow(''),
+            lastName: Joi.string().max(30).allow(''),
+            contactNo: Joi.number().allow(''),
+            email: Joi.string().allow(''),
+        },
+        updatedDate: Joi.date()
+    })
+    return schema.validate(data)
+}
+
+
 module.exports.patientValidation = patientValidation;
+module.exports.updatedPatientValidation = updatedPatientValidation;
