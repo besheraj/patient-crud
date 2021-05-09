@@ -63,7 +63,7 @@ router.post('/login', async (req, res) => {
     const { error } = loginValidation(req.body)
     if (error) return res.status(400).send(respondWithError(error.details[0].message))
 
-    // Email exists
+    // Email Has Account
     const user = await Auth.findOne({ email: req.body.email });
     if (!user) return res.status(400).send(respondWithError(authResponseMessages.loginNotMatch))
 
