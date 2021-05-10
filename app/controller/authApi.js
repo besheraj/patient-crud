@@ -4,9 +4,9 @@ const Auth = require('../models/Auth')
 const BlacklistenToken = require('../models/BlacklistedTokens')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { registerValidation, loginValidation } = require('./validation/authValidation')
-const { respondWithError, respondWithData, respondWithMessage } = require('./lib/respond')
-const {authResponseMessages} = require('./responseMessages/auth') 
+const { registerValidation, loginValidation } = require('../validation/authValidation')
+const { respondWithError, respondWithData, respondWithMessage } = require('../lib/respond')
+const {authResponseMessages} = require('../responseMessages/auth') 
 
 
 router.post('/register', async (req, res) => {

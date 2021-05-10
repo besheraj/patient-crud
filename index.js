@@ -10,8 +10,8 @@ app.use(express.urlencoded({
 }));
 
 // Import Routes
-const authRoute = require('./controller/authApi');
-const patientsRoute = require('./controller/patientsApi');
+const authRoute = require('./app/controller/authApi');
+const patientsRoute = require('./app/controller/patientsApi');
 
 // Route Middlewears
 app.use('/api/auth',authRoute)

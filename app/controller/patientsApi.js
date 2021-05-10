@@ -1,13 +1,15 @@
 const express = require('express')
 const router = express.Router()
 const Patient = require('../models/Patient')
-const verify = require('./lib/verifyToken')
-const { patientValidation, updatedPatientValidation } = require('./validation/patientValidation')
-const { respondWithError, respondWithData, respondWithMessage } = require('./lib/respond')
-const {patientResponseMessages} = require('./responseMessages/patient') 
+const verifyToken = require('../middlewears/verifyToken')
+const verifyUser = require('../middlewears/verifyUser')
+const { patientValidation, updatedPatientValidation } = require('../validation/patientValidation')
+const { respondWithError, respondWithData, respondWithMessage } = require('../lib/respond')
+const { patientResponseMessages } = require('../responseMessages/patient')
+const { authResponseMessages } = require('../responseMessages/auth')
 
 // add patient profile
-router.post('/', verify, async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
 
     // Validate
     const { error } = patientValidation(req.body)
@@ -37,6 +39,7 @@ router.post('/', verify, async (req, res) => {
             contactNo: req.body.nextOfKin.contactNo,
             email: req.body.nextOfKin.email
         },
+        authId: req.user._id
     })
     try {
         const savedPatient = await patient.save()
@@ -49,9 +52,9 @@ router.post('/', verify, async (req, res) => {
 });
 
 // index
-router.get('/', verify, async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
     try {
-        const patients = await Patient.find();
+        const patients = await Patient.find({ authId: req.user._id });
         if (patients.length > 0) {
             const message = patientResponseMessages.allProfiles
             res.json(respondWithData(message, patients))
@@ -67,10 +70,11 @@ router.get('/', verify, async (req, res) => {
 });
 
 // Specific patient
-router.get('/:patientId', verify, async (req, res) => {
+router.get('/:patientId', [verifyToken, verifyUser], async (req, res) => {
+
+    const patient = await Patient.findById(req.params.patientId).populate('authId');
+
     try {
-        const id = req.params.patientId
-        const patient = await Patient.findById(id);
         const message = patientResponseMessages.revived
         res.json(respondWithData(message, patient))
     } catch (err) {
@@ -79,7 +83,7 @@ router.get('/:patientId', verify, async (req, res) => {
 });
 
 // Update Patient
-router.put('/:patientId', verify, async (req, res) => {
+router.put('/:patientId', [verifyToken, verifyUser], async (req, res) => {
 
     // Validate
     const { error } = updatedPatientValidation(req.body)
@@ -87,9 +91,9 @@ router.put('/:patientId', verify, async (req, res) => {
 
     try {
         const entries = Object.keys(req.body)
-        const updates =  {isActive:true}
-        // constructing dynamic query
+        const updates = { isActive: true }
 
+        // constructing dynamic query
         for (let i = 0; i < entries.length; i++) {
             updates[entries[i]] = Object.values(req.body)[i]
         }
@@ -97,7 +101,7 @@ router.put('/:patientId', verify, async (req, res) => {
         const updatePatient = await Patient.updateOne(
             { _id: id },
             {
-                $set:updates
+                $set: updates
             })
         const message = patientResponseMessages.updated
         const patient = await Patient.findById(id);
@@ -109,7 +113,8 @@ router.put('/:patientId', verify, async (req, res) => {
 
 
 // Delete Patient
-router.delete('/:patientId', verify, async (req, res) => {
+router.delete('/:patientId', [verifyToken, verifyUser], async (req, res) => {
+
     try {
         const id = req.params.patientId
         await Patient.remove({ _id: id });

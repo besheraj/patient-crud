@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
-const BlacklistenToken = require('../../models/BlacklistedTokens')
+const BlacklistenToken = require('../models/BlacklistedTokens')
 const {authResponseMessages} = require('../responseMessages/auth') 
+const { respondWithError  } = require('../lib/respond')
 
 module.exports = async function (req,res,next) {
     const token = req.header('access_token');
@@ -13,7 +14,8 @@ module.exports = async function (req,res,next) {
         req.user = verified
         next()
     }catch(err){
-        res.status(400).send(authResponseMessages.invalidToken)
+        res.status(400).send(respondWithError(authResponseMessages.invalidToken))
     }
 }
+
 
