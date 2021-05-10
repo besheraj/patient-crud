@@ -39,6 +39,11 @@ const nextOFKinSchema = mongoose.Schema({
 }, { _id: false })
 
 const patientsSchema = mongoose.Schema({
+    authId:
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Auth'
+    },
     mrn: {
         type: String,
         required: true,
@@ -75,9 +80,10 @@ const patientsSchema = mongoose.Schema({
     }
 },
     {
-        timestamps: { createdAt: 'createdDate', updatedAt: 'updatedDate' }
+        timestamps: { createdAt: 'createdDate', updatedAt: 'updatedDate' }, versionKey: false
+
     }
-    , { versionKey: false })
+)
 
 module.exports = mongoose.model('Patient', patientsSchema)
 

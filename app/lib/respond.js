@@ -3,7 +3,7 @@
 const respondWithError = err => {
     const error = {
         error: true,
-        message: err.toString(),
+        message: err,
         results: {}
     }
     return error
