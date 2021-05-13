@@ -6,7 +6,6 @@ const verifyUser = require('../middlewears/verifyUser')
 const { patientValidation, updatedPatientValidation } = require('../validation/patientValidation')
 const { respondWithError, respondWithData, respondWithMessage } = require('../lib/respond')
 const { patientResponseMessages } = require('../responseMessages/patient')
-const { authResponseMessages } = require('../responseMessages/auth')
 
 // add patient profile
 router.post('/', verifyToken, async (req, res) => {
@@ -83,7 +82,7 @@ router.get('/:patientId', [verifyToken, verifyUser], async (req, res) => {
 });
 
 // Update Patient
-router.put('/:patientId', [verifyToken, verifyUser], async (req, res) => {
+router.patch('/:patientId', [verifyToken, verifyUser], async (req, res) => {
 
     // Validate
     const { error } = updatedPatientValidation(req.body)
