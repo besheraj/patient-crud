@@ -68,8 +68,7 @@ router.post('/login', async (req, res) => {
     if (!user) return res.status(400).send(respondWithError(authResponseMessages.loginNotMatch))
 
     // If Password & Email is a match
-    const validatePass = await bcrypt.compare(req.body.password, user.password)
-    if (!validatePass) return res.status(400).send(respondWithError(authResponseMessages.loginNotMatch))
+    if (req.body.password != user.password) return res.status(400).send(respondWithError(authResponseMessages.loginNotMatch))
 
     // Create Token 
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, { expiresIn: '2h' })
